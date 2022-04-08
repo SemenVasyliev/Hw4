@@ -1,0 +1,69 @@
+image: mcr.microsoft.com/dotnet/sdk:6.0
+
+variables:
+  # 1) Name of directory where restore and build objects are stored.
+  OBJECTS_DIRECTORY: 'obj'
+  # 2) Name of directory used for keeping restored dependencies.
+  NUGET_PACKAGES_DIRECTORY: '.nuget'
+  # 3) A relative path to the source code from project repository root.
+  SOURCE_CODE_PATH: '*/*/'
+
+cache:
+  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+  paths:
+    - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/project.assets.json'
+    - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/*.csproj.nuget.*'
+    - '$NUGET_PACKAGES_DIRECTORY'
+  policy: pull-push
+
+before_script:
+  - 'dotnet restore --packages $NUGET_PACKAGES_DIRECTORY'
+
+build:
+  stage: build
+  script:
+    - 'dotnet build --no-restore'
+  tags:
+    - docker-shared
+
+Exercise0:
+  stage: test
+  script:
+    - 'dotnet test ./tests/Hw4.Exercise0.Tests --no-restore --test-adapter-path:. --logger:"junit;LogFilePath=../../artifacts/{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
+  tags:
+    - docker-shared
+  artifacts:
+    when: always
+    paths:
+      - ./**/*test-result.xml
+    reports:
+      junit:
+        - ./**/*test-result.xml
+
+Exercise1:
+  stage: test
+  script:
+    - 'dotnet test ./tests/Hw4.Exercise1.Tests --no-restore --test-adapter-path:. --logger:"junit;LogFilePath=../../artifacts/{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
+  tags:
+    - docker-shared
+  artifacts:
+    when: always
+    paths:
+      - ./**/*test-result.xml
+    reports:
+      junit:
+        - ./**/*test-result.xml
+
+Exercise2:
+  stage: test
+  script:
+    - 'dotnet test ./tests/Hw4.Exercise2.Tests --no-restore --test-adapter-path:. --logger:"junit;LogFilePath=../../artifacts/{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
+  tags:
+    - docker-shared
+  artifacts:
+    when: always
+    paths:
+      - ./**/*test-result.xml
+    reports:
+      junit:
+        - ./**/*test-result.xml

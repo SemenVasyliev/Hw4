@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Hw4.Exercise1\Hw4.Exercise1.csproj" />
+  </ItemGroup>
+</Project>
